@@ -15,7 +15,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gson.vervion>2.10.1</gson.vervion>
         <postgresql.version>42.7.10</postgresql.version>
-        <liquibase.version>5.0.2</liquibase.version>
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.23.0</mockito.version>
         <hibernate.version>7.3.2.Final</hibernate.version>
@@ -24,6 +23,7 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -44,12 +44,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
-            <scope>compile</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
