@@ -1,6 +1,6 @@
 package repository.storage;
 
-import model.File;
+import dto.FileDTO;
 import utils.FileStorageConfig;
 
 import java.io.FileOutputStream;
@@ -13,7 +13,7 @@ public class FileStorageImpl implements FileStorage {
 
 
     @Override
-    public File saveFile(InputStream inputStream, String fileName) {
+    public FileDTO saveFile(InputStream inputStream, String fileName) {
 
         FileStorageConfig.checkDirectory();
 
@@ -26,16 +26,16 @@ public class FileStorageImpl implements FileStorage {
             throw new RuntimeException(e);
         }
 
-        File fileEntity = new File();
-        fileEntity.setName(uniqueFileName);
-        fileEntity.setFilePath(filePath);
-        return fileEntity;
+        FileDTO fileDTO = new FileDTO();
+        fileDTO.setName(uniqueFileName);
+        fileDTO.setFilePath(filePath);
+        return fileDTO;
     }
 
     @Override
     public byte[] getFile(String filePath) {
         FileStorageConfig.checkDirectory();
-        java.io.File file = new java.io.File(filePath);
+        File file = new File(filePath);
         byte[] data = new byte[(int) file.length()];
 
         try (FileInputStream fis = new FileInputStream(file)) {
@@ -49,7 +49,7 @@ public class FileStorageImpl implements FileStorage {
     @Override
     public boolean deleteFile(String filePath) {
         FileStorageConfig.checkDirectory();
-        java.io.File file = new java.io.File(filePath);
+       File file = new File(filePath);
         return file.delete();
     }
 }

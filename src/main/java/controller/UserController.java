@@ -1,14 +1,14 @@
 package controller;
 
-import com.google.gson.Gson;
+import dto.UserDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.User;
 import repository.hibernate.user.UserRepository;
 import repository.hibernate.user.UserRepositoryImpl;
+import service.user.UserService;
 import service.user.UserServiceImpl;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.List;
 public class UserController extends HttpServlet {
 
     UserRepository userRepository = new UserRepositoryImpl();
-    UserServiceImpl userService = new UserServiceImpl(userRepository);
+    UserService userService = new UserServiceImpl(userRepository);
 
     @Override
     public void init() throws ServletException {
@@ -32,13 +32,13 @@ public class UserController extends HttpServlet {
             throws IOException {
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
-            List<User> users = userService.getAll();
+            List<UserDTO> users = userService.getAll();
             StringBuilder json = new StringBuilder();
             users.forEach((user) -> json.append(user.toJson()));
             resp.getWriter().write(String.valueOf(json));
         } else {
             Long id = Long.valueOf(info.substring(1));
-            User user = userService.getById(id);
+            UserDTO user = userService.getById(id);
             resp.getWriter().write(user.toJson());
         }
     }
@@ -48,9 +48,9 @@ public class UserController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
         String result = getResultRequest(req);
-        User user = User.fromJson(result);
-        if (checkUser(user, resp)) {
-            User savedUser = userService.create(user);
+        UserDTO user = UserDTO.fromJson(result);
+        if (checkUser(user, resp, false)) {
+            UserDTO savedUser = userService.create(user);
             resp.getWriter().write(savedUser.toJson());
         }
     }
@@ -60,9 +60,10 @@ public class UserController extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
         String result = getResultRequest(req);
-        User user = User.fromJson(result);
-        if (checkUser(user, resp)) {
-            User savedUser = userService.update(user);
+        UserDTO user = UserDTO.fromJson(result);
+
+        if (checkUser(user, resp, true)) {
+            UserDTO savedUser = userService.update(user);
             resp.getWriter().write(user.toJson());
         }
 
@@ -86,14 +87,18 @@ public class UserController extends HttpServlet {
         IO.println("Destroy user controller");
     }
 
-    private boolean checkUser(User user, HttpServletResponse resp)
+    private boolean checkUser(UserDTO user, HttpServletResponse resp, boolean isPut)
             throws IOException {
-        if (user.getName() == null || user.getName().isEmpty()) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("{\"error\":\"Username is empty\"}");
-            return false;
-        }
+        if (user.getName() == null || user.getName().isEmpty()) return sendError(resp);
+        if (isPut && user.getId() == null) return sendError(resp);
         return true;
+    }
+
+
+    private boolean sendError (HttpServletResponse resp) throws IOException {
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        resp.getWriter().write("{\"error\":\"Username or Id is empty\"}");
+        return false;
     }
 
     private String getResultRequest(HttpServletRequest req)

@@ -1,18 +1,18 @@
 package controller;
 
-import DTO.EventDTO;
+import dto.EventDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Event;
 import repository.hibernate.event.EventRepository;
 import repository.hibernate.event.EventRepositoryImpl;
 import repository.hibernate.file.FileRepository;
 import repository.hibernate.file.FileRepositoryImpl;
 import repository.hibernate.user.UserRepository;
 import repository.hibernate.user.UserRepositoryImpl;
+import service.event.EventService;
 import service.event.EventServiceImpl;
 
 import java.io.IOException;
@@ -24,8 +24,7 @@ public class EventController extends HttpServlet {
     EventRepository eventRepository = new EventRepositoryImpl();
     UserRepository userRepository = new UserRepositoryImpl();
     FileRepository fileRepository = new FileRepositoryImpl();
-
-    EventServiceImpl eventService = new EventServiceImpl(eventRepository, userRepository, fileRepository);
+    EventService eventService = new EventServiceImpl(eventRepository, userRepository, fileRepository);
 
     @Override
     public void init() throws ServletException {
@@ -38,13 +37,13 @@ public class EventController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
-            List<Event> events = eventService.getAll();
+            List<EventDTO> events = eventService.getAll();
             StringBuilder json = new StringBuilder();
             events.forEach((event) -> json.append(event.toJson()));
             resp.getWriter().write(String.valueOf(json));
         } else {
             Long id = Long.valueOf(info.substring(1));
-            Event event = eventService.getById(id);
+            EventDTO event = eventService.getById(id);
             resp.getWriter().write(event.toJson());
         }
 
@@ -56,13 +55,14 @@ public class EventController extends HttpServlet {
         String result = getResultRequest(req);
 
         EventDTO eventDTO = EventDTO.fromJson(result);
-        if (eventDTO.getUserId() == null || eventDTO.getFileId() == null) {
+
+        if (eventDTO.getUserId() == null || eventDTO.getFile().getId() == null) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("{\"error\":\"User or file not found\"}");
             return;
         }
         try {
-            Event event = eventService.create(eventDTO.getUserId(), eventDTO.getFileId());
+            EventDTO event = eventService.create(eventDTO);
             resp.getWriter().write(event.toJson());
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

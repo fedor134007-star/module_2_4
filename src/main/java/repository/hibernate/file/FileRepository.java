@@ -1,15 +1,18 @@
 package repository.hibernate.file;
 
-import model.File;
+import dto.FileDTO;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FileRepository {
-    Optional<File> save(File file);
+    Optional<FileDTO> save(FileDTO file);
 
-    Optional<File> getById(Long id);
+    Optional<FileDTO> getById(Long id);
 
-    boolean delete(File file);
+    boolean delete(FileDTO file);
+
+    List<FileDTO> getAll();
 }
 
 

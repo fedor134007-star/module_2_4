@@ -1,6 +1,7 @@
 package controller;
 
 
+import dto.FileDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,13 +9,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import model.File;
 import repository.hibernate.file.FileRepository;
 import repository.hibernate.file.FileRepositoryImpl;
 import service.file.FileService;
 import service.file.FileServiceImpl;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/api/files/*")
 @MultipartConfig(
@@ -37,10 +38,15 @@ public class FileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String info = req.getPathInfo();
-        if (info != null && info.length() > 1) {
+        if (info == null || info.equals("/")) {
+            List<FileDTO> files = fileService.getAll();
+            StringBuilder json = new StringBuilder();
+            files.forEach((file) -> json.append(file.toJson()));
+            resp.getWriter().write(String.valueOf(json));
+        } else if (info.length() > 1) {
             Long id = Long.valueOf(info.substring(1));
-            File file = fileService.getById(id);
-            if(file == null){
+            FileDTO file = fileService.getById(id);
+            if (file == null) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().write("{\"error\":\"File not found\"}");
                 return;
@@ -59,7 +65,7 @@ public class FileController extends HttpServlet {
                 resp.getWriter().write("{\"error\":\"File is required\"}");
                 return;
             }
-            File createdFile = fileService.create(filePart.getInputStream(), filePart.getSubmittedFileName());
+            FileDTO createdFile = fileService.create(filePart.getInputStream(), filePart.getSubmittedFileName());
             resp.getWriter().write(createdFile.toJson());
         } catch (Exception e) {
             IO.println(e.getMessage());

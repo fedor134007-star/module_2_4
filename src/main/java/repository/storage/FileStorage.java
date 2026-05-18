@@ -1,12 +1,13 @@
 package repository.storage;
 
+import dto.FileDTO;
 import model.File;
 
 import java.io.InputStream;
 
 public interface FileStorage {
 
-    public File saveFile(InputStream inputStream,  String fileName);
+    public FileDTO saveFile(InputStream inputStream, String fileName);
 
     public byte[] getFile(String filePath);
 

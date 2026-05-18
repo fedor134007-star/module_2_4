@@ -1,18 +1,19 @@
 package repository.hibernate.user;
 
+import dto.UserDTO;
 import model.User;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
-    Optional<User> save(User user);
+    Optional<UserDTO> save(UserDTO user);
 
-    List<User> getAll();
+    List<UserDTO> getAll();
 
-    User update(User user);
+    UserDTO update(UserDTO user);
 
-    Optional<User> getById(Long id);
+    Optional<UserDTO> getById(Long id);
 
     boolean delete(Long id);
 }

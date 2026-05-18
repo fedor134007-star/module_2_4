@@ -1,5 +1,8 @@
 package service.event;
 
+import dto.EventDTO;
+import dto.FileDTO;
+import dto.UserDTO;
 import model.Event;
 import model.File;
 import model.User;
@@ -22,28 +25,23 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event create(Long userId, Long fileId) {
-        User user = userRepository.getById(userId).orElse(null);
-        File file = fileRepository.getById(fileId).orElse(null);
+    public EventDTO create(EventDTO eventDTO) {
+        UserDTO user = userRepository.getById(eventDTO.getUserId()).orElse(null);
+        FileDTO file = fileRepository.getById(eventDTO.getFile().getId()).orElse(null);
 
         if (user == null || file == null) throw new NullPointerException();
-
-        Event event = new Event();
-        event.setUser(user);
-        event.setFile(file);
-
-        Optional<Event> opt = eventRepository.save(event);
+        Optional<EventDTO> opt = eventRepository.save(eventDTO);
         return opt.orElse(null);
     }
 
     @Override
-    public Event getById(Long id) {
-        Optional<Event> opt = eventRepository.getById(id);
+    public EventDTO getById(Long id) {
+        Optional<EventDTO> opt = eventRepository.getById(id);
         return opt.orElse(null);
     }
 
     @Override
-    public List<Event> getAll() {
+    public List<EventDTO> getAll() {
         return eventRepository.getAll();
     }
 

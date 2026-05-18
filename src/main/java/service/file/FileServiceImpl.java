@@ -1,11 +1,12 @@
 package service.file;
 
-import model.File;
+import dto.FileDTO;
 import repository.hibernate.file.FileRepository;
 import repository.storage.FileStorage;
 import repository.storage.FileStorageImpl;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 
 public class FileServiceImpl implements FileService {
@@ -18,15 +19,15 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File create(InputStream inputStream, String fileName) {
-        File savedFile = fileStorage.saveFile(inputStream, fileName);
-        Optional<File> opt = fileRepository.save(savedFile);
+    public FileDTO create(InputStream inputStream, String fileName) {
+        FileDTO savedFile = fileStorage.saveFile(inputStream, fileName);
+        Optional<FileDTO> opt = fileRepository.save(savedFile);
         return opt.orElse(null);
     }
 
     @Override
-    public File getById(Long id) {
-        Optional<File> opt = fileRepository.getById(id);
+    public FileDTO getById(Long id) {
+        Optional<FileDTO> opt = fileRepository.getById(id);
         opt.ifPresent(file -> {
             byte[] fileBytes = fileStorage.getFile(file.getFilePath());
             file.setFileContent(fileBytes);
@@ -36,11 +37,16 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public boolean delete(Long id) {
-        File file = getById(id);
+        FileDTO file = getById(id);
         if (file != null) {
             fileStorage.deleteFile(file.getFilePath());
             return fileRepository.delete(file);
         }
         return false;
+    }
+
+    @Override
+    public List<FileDTO> getAll() {
+        return fileRepository.getAll();
     }
 }

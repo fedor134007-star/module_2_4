@@ -1,6 +1,6 @@
 package service.user;
 
-import model.User;
+import dto.UserDTO;
 import repository.hibernate.user.UserRepository;
 
 import java.util.List;
@@ -15,24 +15,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User user) {
-        Optional<User> opt = userRepository.save(user);
+    public UserDTO create(UserDTO user) {
+        Optional<UserDTO> opt = userRepository.save(user);
         return opt.orElse(null);
     }
 
     @Override
-    public User update(User user) {
+    public UserDTO update(UserDTO user) {
         return userRepository.update(user);
     }
 
     @Override
-    public User getById(Long id) {
-        Optional<User> opt = userRepository.getById(id);
+    public UserDTO getById(Long id) {
+        Optional<UserDTO> opt = userRepository.getById(id);
         return opt.orElse(null);
     }
 
     @Override
-    public List<User> getAll() {
+    public List<UserDTO> getAll() {
         return userRepository.getAll();
     }
 

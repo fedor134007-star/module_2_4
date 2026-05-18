@@ -1,5 +1,6 @@
 package repository.hibernate.event;
 
+import dto.EventDTO;
 import model.Event;
 
 import java.util.List;
@@ -7,11 +8,11 @@ import java.util.Optional;
 
 public interface EventRepository {
 
-    Optional<Event> save(Event event);
+    Optional<EventDTO> save(EventDTO event);
 
-    Optional<Event> getById(Long id);
+    Optional<EventDTO> getById(Long id);
 
-    List<Event> getAll();
+    List<EventDTO> getAll();
 
     boolean delete(Long id);
 }

@@ -1,18 +1,17 @@
 package service.user;
 
-import model.User;
+import dto.UserDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
-    User create(User user);
+    UserDTO create(UserDTO user);
 
-    User update(User user);
+    UserDTO update(UserDTO user);
 
-    User getById(Long id);
+    UserDTO getById(Long id);
 
-    List<User> getAll();
+    List<UserDTO> getAll();
 
     boolean delete(Long id);
 }

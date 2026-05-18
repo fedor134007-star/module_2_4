@@ -1,15 +1,15 @@
 package service.event;
 
-import model.Event;
+import dto.EventDTO;
 
 import java.util.List;
 
 public interface EventService {
-    public Event create(Long userId, Long fileId);
+    public EventDTO create(EventDTO eventDTO);
 
-    public Event getById(Long id);
+    public EventDTO getById(Long id);
 
-    public List<Event> getAll();
+    public List<EventDTO> getAll();
 
     public boolean delete(Long id);
 
