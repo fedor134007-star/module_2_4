@@ -11,13 +11,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import repository.hibernate.file.FileRepository;
 import repository.hibernate.file.FileRepositoryImpl;
+import repository.storage.FileStorage;
+import repository.storage.FileStorageImpl;
 import service.file.FileService;
 import service.file.FileServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/api/files/*")
+@WebServlet("/api/v1/files/*")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,      // 1 MB - временное хранилище
         maxFileSize = 1024 * 1024 * 10,       // 10 MB - максимальный размер файла
@@ -26,7 +28,8 @@ import java.util.List;
 public class FileController extends HttpServlet {
 
     FileRepository fileRepository = new FileRepositoryImpl();
-    FileService fileService = new FileServiceImpl(fileRepository);
+    FileStorage fileStorage = new FileStorageImpl();
+    FileService fileService = new FileServiceImpl(fileRepository, fileStorage);
 
     @Override
     public void init() throws ServletException {

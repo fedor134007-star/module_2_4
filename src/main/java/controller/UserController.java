@@ -14,7 +14,7 @@ import service.user.UserServiceImpl;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/api/users/*")
+@WebServlet("/api/v1/users/*")
 public class UserController extends HttpServlet {
 
     UserRepository userRepository = new UserRepositoryImpl();

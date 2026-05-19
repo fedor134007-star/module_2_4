@@ -18,7 +18,7 @@ import service.event.EventServiceImpl;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/api/events/*")
+@WebServlet("/api/v1/events/*")
 public class EventController extends HttpServlet {
 
     EventRepository eventRepository = new EventRepositoryImpl();

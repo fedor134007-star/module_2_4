@@ -3,7 +3,6 @@ package repository.hibernate.event;
 import dto.EventDTO;
 import model.Event;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import utils.HibernateUtil;
 
 import java.util.List;
@@ -15,8 +14,7 @@ public class EventRepositoryImpl implements EventRepository {
     @Override
     public Optional<EventDTO> save(EventDTO event) {
 
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             Event savedEvent = session.merge(event.toEntity());
             session.getTransaction().commit();
@@ -30,8 +28,7 @@ public class EventRepositoryImpl implements EventRepository {
     @Override
     public Optional<EventDTO> getById(Long id) {
         String hql = "From Event e LEFT JOIN FETCH e.file WHERE e.id = :id";
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             Event event = session.createQuery(hql, Event.class)
                     .setParameter("id", id)
@@ -46,8 +43,7 @@ public class EventRepositoryImpl implements EventRepository {
     @Override
     public List<EventDTO> getAll() {
         String hql = "SELECT DISTINCT e FROM Event e LEFT JOIN FETCH e.file f";
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             var events = session.createQuery(hql, Event.class).list();
             session.getTransaction().commit();
@@ -59,8 +55,7 @@ public class EventRepositoryImpl implements EventRepository {
 
     @Override
     public boolean delete(Long id) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             Event event = session.find(Event.class, id);
             if (event == null) return false;

@@ -3,7 +3,6 @@ package model;
 import com.google.gson.Gson;
 import jakarta.persistence.*;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -19,8 +18,6 @@ public class File {
     @Column(name = "file_path")
     private String filePath;
 
-    @Transient
-    private byte[] fileContent;
 
     public File() {
     }
@@ -32,12 +29,7 @@ public class File {
     }
 
 
-    public File(Long id, String name, String filePath, byte[] fileContent) {
-        this.id = id;
-        this.name = name;
-        this.filePath = filePath;
-        this.fileContent = fileContent;
-    }
+
 
 
     public Long getId() {
@@ -64,24 +56,19 @@ public class File {
         this.filePath = filePath;
     }
 
-    public byte[] getFileContent() {
-        return fileContent;
-    }
 
-    public void setFileContent(byte[] fileContent) {
-        this.fileContent = fileContent;
-    }
+
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         File file = (File) o;
-        return Objects.equals(id, file.id) && Objects.equals(name, file.name) && Objects.equals(filePath, file.filePath) && Objects.deepEquals(fileContent, file.fileContent);
+        return Objects.equals(id, file.id) && Objects.equals(name, file.name) && Objects.equals(filePath, file.filePath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, filePath, Arrays.hashCode(fileContent));
+        return Objects.hash(id, name, filePath);
     }
 
     public String toJson() {

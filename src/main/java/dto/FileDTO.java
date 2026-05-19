@@ -16,7 +16,6 @@ public class FileDTO {
         this.id = file.getId();
         this.name = file.getName();
         this.filePath = file.getFilePath();
-        this.fileContent = file.getFileContent();  // просто копируем byte[]
     }
 
     // Геттеры и сеттеры
@@ -58,7 +57,6 @@ public class FileDTO {
         if (this.id != null) file.setId(this.id);
         if (this.name != null) file.setName(this.name);
         if (this.filePath != null) file.setFilePath(this.filePath);
-        if (this.fileContent != null) file.setFileContent(this.fileContent);
         return file;
     }
 

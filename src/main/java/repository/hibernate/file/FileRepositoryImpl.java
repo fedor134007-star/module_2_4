@@ -13,8 +13,7 @@ public class FileRepositoryImpl implements FileRepository {
 
     @Override
     public Optional<FileDTO> save(FileDTO file) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             File savedUser = session.merge(file.toEntity());
             session.getTransaction().commit();
@@ -28,8 +27,7 @@ public class FileRepositoryImpl implements FileRepository {
 
     @Override
     public Optional<FileDTO> getById(Long id) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             File fileOpt = session.find(File.class, id);
             session.getTransaction().commit();
@@ -41,8 +39,7 @@ public class FileRepositoryImpl implements FileRepository {
 
     @Override
     public boolean delete(FileDTO file) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             session.remove(file.toEntity());
             session.getTransaction().commit();
@@ -55,8 +52,7 @@ public class FileRepositoryImpl implements FileRepository {
     @Override
     public List<FileDTO> getAll() {
         String hql = "SELECT DISTINCT f FROM File f";
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             var files =  session.createQuery(hql, File.class).list();
             session.getTransaction().commit();

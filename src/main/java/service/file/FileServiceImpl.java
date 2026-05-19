@@ -3,7 +3,6 @@ package service.file;
 import dto.FileDTO;
 import repository.hibernate.file.FileRepository;
 import repository.storage.FileStorage;
-import repository.storage.FileStorageImpl;
 
 import java.io.InputStream;
 import java.util.List;
@@ -11,11 +10,11 @@ import java.util.Optional;
 
 public class FileServiceImpl implements FileService {
     final FileRepository fileRepository;
+    final FileStorage fileStorage;
 
-    final FileStorage fileStorage = new FileStorageImpl();
-
-    public FileServiceImpl(FileRepository fileRepository) {
+    public FileServiceImpl(FileRepository fileRepository, FileStorage fileStorage) {
         this.fileRepository = fileRepository;
+        this.fileStorage = fileStorage;
     }
 
     @Override

@@ -4,7 +4,6 @@ import dto.UserDTO;
 import model.Event;
 import model.User;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import utils.HibernateUtil;
 
 import java.util.List;
@@ -14,8 +13,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<UserDTO> save(UserDTO user) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             User newUser = user.toEntity();
             User savedUser = session.merge(newUser);
@@ -30,8 +28,7 @@ public class UserRepositoryImpl implements UserRepository {
     public List<UserDTO> getAll() {
         String hql = "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.events e";
         String hqlEvent = "SELECT DISTINCT e FROM Event e LEFT JOIN FETCH e.file";
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             var users = session.createQuery(hql, User.class).list();
             if (!users.isEmpty()) session.createQuery(hqlEvent, Event.class).list();
@@ -44,8 +41,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public UserDTO update(UserDTO user) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             User updatedUser = session.merge(user.toEntity());
             session.getTransaction().commit();
@@ -59,9 +55,9 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<UserDTO> getById(Long id) {
         String hql = "SELECT DISTINCT u From User u LEFT JOIN FETCH u.events WHERE u.id = :id";
         String hqlEvent = "SELECT DISTINCT e FROM Event e LEFT JOIN FETCH e.file WHERE e.id IN (:ids)";
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
-        try (Session session = sessionFactory.openSession();) {
+
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             User user = session.createQuery(hql, User.class)
                     .setParameter("id", id)
@@ -85,8 +81,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean delete(Long id) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        try (Session session = sessionFactory.openSession();) {
+        try (Session session = HibernateUtil.getSession()) {
             session.beginTransaction();
             User user = session.find(User.class, id);
             if (user == null) return false;
